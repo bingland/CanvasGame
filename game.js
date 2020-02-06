@@ -9,6 +9,7 @@ const c = cvs.getContext('2d')
 
 // * global vars
 let frames = 0
+let level = 1
 
 
 // * sprite sheet
@@ -104,6 +105,86 @@ const cat = {
     }
 }
 
+// * bricks
+const bricks = {
+    map: [],
+
+    block1: {
+        sX: 0,
+        sY: 148
+    },
+    block2: {
+        sX: 0,
+        sY: 187
+    },
+    w: 54,
+    h: 39,
+
+    draw: function () {
+        for (let i = 0; i < this.map.length; i++) {
+            
+            let blockType = this.map[i].type
+
+            // check the type of block
+            switch (blockType) {
+                case 1:
+                    c.drawImage(sprites, this.block1.sX, this.block1.sY, this.w, this.h, this.map[i].x, this.map[i].y, this.w, this.h)
+                    break
+                case 2: 
+                c.drawImage(sprites, this.block2.sX, this.block2.sY, this.w, this.h, this.map[i].x, this.map[i].y, this.w, this.h)
+                    break
+            }
+        }
+    },
+
+    update: function () {
+
+    }
+}
+
+
+// * level data
+const levelData = [
+    // * 6 blocks per row
+    // * [total, level1, level2, etc...]
+
+    //level 1
+    [18, 6, 6] // TODO: take into mind certain patterns or pictures that you want to make. randomizing may not be what you want
+]
+
+// * init level
+const initLevel = () => {
+    // variables for placement of bricks
+    let totalBlocks = levelData[level - 1][0]
+    let columns = 6
+    let rows = totalBlocks / columns
+    let xGap = 10
+    let yGap = xGap
+    let xOffset = 12
+    let yOffset = xOffset
+
+
+    for (let i = 0; i < rows; i++) {
+        // rows
+        let yLoc = (i * (39 + yGap)) + yOffset
+
+        for (let j = 0; j < columns; j++) {
+            // columns
+            // push new brick
+            let xLoc = (j * (54 + xGap)) + xOffset
+
+            // * decide the level of block according to something
+
+
+            bricks.map.push({
+                type: 1,
+                x: xLoc,
+                y: yLoc
+            })
+        }
+    }
+}
+
 // * UPDATE 
 const update = () => {
     cat.update()
@@ -114,11 +195,8 @@ const draw = () => {
     c.fillStyle = "#936DE8"
     c.fillRect(0,0,cvs.width,cvs.height)
 
-    c.beginPath()
-    c.arc(95, 50, 40, 0, 2 * Math.PI)
-    c.stroke()
-
     cat.draw()
+    bricks.draw()
 }
 
 // * MAIN LOOP
@@ -128,4 +206,5 @@ const loop = () => {
     frames++
     requestAnimationFrame(loop)
 }
+initLevel()
 loop()
