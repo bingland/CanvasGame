@@ -83,7 +83,7 @@ const cat = {
     w: 99,
     h: 74,
     x: cvs.width/2 - (99/2),
-    y: cvs.height - 100,
+    y: cvs.height - 110,
     dx: 2,
     frame: 0,
 
@@ -163,13 +163,19 @@ const levelData = [
     // * [total, level1, level2, etc...]
 
     //level 1
-    [18, 6, 6] // TODO: take into mind certain patterns or pictures that you want to make. randomizing may not be what you want
+    // TODO: take into mind certain patterns or pictures that you want to make. randomizing may not be what you want
+    [
+        [0, 1, 2, 1, 2, 1, 0],
+        [0, 2, 2, 1, 1, 2, 0],
+        [0, 1, 2, 2, 1, 1, 0]
+    ]
 ]
 
 // * init level
 const initLevel = () => {
     // variables for placement of bricks
-    let totalBlocks = levelData[level - 1][0]
+    
+    let totalBlocks = levelData[level-1].length * 7
     let columns = 7
     let rows = totalBlocks / columns
     let xGap = 3
@@ -191,7 +197,7 @@ const initLevel = () => {
 
 
             bricks.map.push({
-                type: 1,
+                type: levelData[level-1][i][j],
                 x: xLoc,
                 y: yLoc
             })
@@ -207,7 +213,7 @@ const update = () => {
 // * DRAW
 const draw = () => {
     c.clearRect(0, 0, cvs.width, cvs.height);
-    bg.draw()
+    //bg.draw()
 
     cat.draw()
     bricks.draw()
