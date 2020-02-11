@@ -119,6 +119,46 @@ const cat = {
     }
 }
 
+// * ball
+const ball = {
+    sX: 54,
+    sY: 148,
+    w: 27,
+    h: 27, 
+    x: cvs.width / 2,
+    y: cvs.height / 2,
+    dx: 2,
+    dy: 2,
+    frame: 0,
+
+    draw: function () {
+        c.drawImage(sprites, this.sX, this.sY, this.w, this.h, this.x, this.y, this.w, this.h)
+    },
+    
+    update: function () {
+        if (this.y + this.h >= cvs.height) {
+            console.log('GAME OVER!')
+            // off bottom
+            this.dy = -this.dy
+        }
+        if (this.x + this.h >= cvs.width) {
+            // off right
+            this.dx = -this.dx
+        }
+        if (this.y <= 0) {
+            // off top screen
+            this.dy = -this.dy
+        }
+        if (this.x <= 0) {
+            // off left screen
+            this.dx = -this.dx
+        }
+        
+        this.x += this.dx
+        this.y += this.dy
+    }
+}
+
 // * bricks
 const bricks = {
     map: [],
@@ -208,6 +248,8 @@ const initLevel = () => {
 // * UPDATE 
 const update = () => {
     cat.update()
+    bricks.update()
+    ball.update()
 }
 
 // * DRAW
@@ -217,6 +259,7 @@ const draw = () => {
 
     cat.draw()
     bricks.draw()
+    ball.draw()
 }
 
 // * MAIN LOOP
