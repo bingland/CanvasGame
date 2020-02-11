@@ -61,6 +61,20 @@ document.addEventListener('keyup', function(e){
     }
 })
 
+// * background 
+const bg = {
+    sX: 99, 
+    sY: 0,
+    w: 400,
+    h: 650,
+    x: 0,
+    y: 0,
+
+    draw: function () {
+        c.drawImage(sprites, this.sX, this.sY, this.w, this.h, this.x, this.y, this.w, this.h)
+    }
+}
+
 // * cat
 const cat = {
     leftMovement: [{sX: 0, sY: 0}],
@@ -156,11 +170,11 @@ const levelData = [
 const initLevel = () => {
     // variables for placement of bricks
     let totalBlocks = levelData[level - 1][0]
-    let columns = 6
+    let columns = 7
     let rows = totalBlocks / columns
-    let xGap = 10
+    let xGap = 3
     let yGap = xGap
-    let xOffset = 12
+    let xOffset = 2
     let yOffset = xOffset
 
 
@@ -192,8 +206,8 @@ const update = () => {
 
 // * DRAW
 const draw = () => {
-    c.fillStyle = "#936DE8"
-    c.fillRect(0,0,cvs.width,cvs.height)
+    c.clearRect(0, 0, cvs.width, cvs.height);
+    bg.draw()
 
     cat.draw()
     bricks.draw()
