@@ -127,8 +127,8 @@ const ball = {
     h: 27, 
     x: cvs.width / 2,
     y: cvs.height / 2,
-    dx: 2,
-    dy: 2,
+    dx: 4,
+    dy: 4,
     frame: 0,
 
     draw: function () {
@@ -136,6 +136,7 @@ const ball = {
     },
     
     update: function () {
+        // check to see if ball makes contact with the edges of the screen
         if (this.y + this.h >= cvs.height) {
             console.log('GAME OVER!')
             // off bottom
@@ -161,7 +162,7 @@ const ball = {
 
 // * bricks
 const bricks = {
-    map: [],
+    list: [],
 
     block1: {
         sX: 0,
@@ -175,24 +176,80 @@ const bricks = {
     h: 39,
 
     draw: function () {
-        for (let i = 0; i < this.map.length; i++) {
+        for (let i = 0; i < this.list.length; i++) {
             
-            let blockType = this.map[i].type
+            let blockType = this.list[i].type
 
             // check the type of block
             switch (blockType) {
                 case 1:
-                    c.drawImage(sprites, this.block1.sX, this.block1.sY, this.w, this.h, this.map[i].x, this.map[i].y, this.w, this.h)
+                    c.drawImage(sprites, this.block1.sX, this.block1.sY, this.w, this.h, this.list[i].x, this.list[i].y, this.w, this.h)
                     break
                 case 2: 
-                c.drawImage(sprites, this.block2.sX, this.block2.sY, this.w, this.h, this.map[i].x, this.map[i].y, this.w, this.h)
+                c.drawImage(sprites, this.block2.sX, this.block2.sY, this.w, this.h, this.list[i].x, this.list[i].y, this.w, this.h)
                     break
             }
         }
     },
 
     update: function () {
+        // check to see if the ball makes contact with the brick
+        if (ball.y < cvs.height / 2) {
+            for (let i = 0; i < this.list.length; i++) {
+                
+                if(this.list[i].type > 0 && ball.x < this.list[i].x + this.w && ball.x + ball.w > this.list[i].x && ball.y < this.list[i].y + this.h && ball.y + ball.h > this.list[i].y) {
+                    console.log('CONTACT')
+                    if(ball.y <= this.list[i].y - (this.h)) {
+                        this.list[i].type -= 1
+                        ball.dy = -ball.dy
+                    }
+                    //Hit was from below the brick
 
+                    if(ball.y >= this.list[i].y + (this.h)){
+                        this.list[i].type -= 1
+                        ball.dy = -ball.dy
+                    }
+                    //Hit was from above the brick
+
+                    if(ball.x < this.list[i].x){
+                        this.list[i].type -= 1
+                        ball.dx = -ball.dx
+                    }
+                    //Hit was on left
+
+                    if(ball.x > this.list[i].x){
+                        this.list[i].type -= 1
+                        ball.dx = -ball.dx
+                    }
+
+                    //Hit was on right
+
+                    /*
+                    // direction: up right
+                    if (ball.dx > 0 && ball.dy < 0) {
+                        this.list[i].type -= 1
+                        ball.dx = -ball.dx
+                    }
+                    // direction: up left
+                    else if (ball.dx < 0 && ball.dy < 0) {
+                        this.list[i].type -= 1
+                        ball.dy = -ball.dy
+                    }
+                    // direction: down right
+                    else if (ball.dx > 0 && ball.dy > 0) {
+                        this.list[i].type -= 1
+                        ball.dy = -ball.dy
+                    }
+                    // direction: down left
+                    else if (ball.dx < 0 && ball.dy > 0) {
+                        this.list[i].type -= 1
+                        ball.dy = -ball.dy
+                    }
+                    */
+                }
+                
+            }
+        }
     }
 }
 
@@ -236,7 +293,7 @@ const initLevel = () => {
             // * decide the level of block according to something
 
 
-            bricks.map.push({
+            bricks.list.push({
                 type: levelData[level-1][i][j],
                 x: xLoc,
                 y: yLoc
