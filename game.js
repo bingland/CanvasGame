@@ -46,16 +46,16 @@ document.addEventListener('keyup', function(e){
     switch (e.keyCode) {
         case 39: 
         case 68:
-            console.log('let go of right!')
+            //console.log('let go of right!')
             rightPressed = false
             break
         case 37:
         case 65:
-            console.log('let go of left!')
+            //console.log('let go of left!')
             leftPressed = false
             break
         case 32:
-            console.log('let go of space!')
+            //console.log('let go of space!')
             spacePressed = false
             break
     }
@@ -82,7 +82,7 @@ const cat = {
     dir: 'right',
     w: 99,
     h: 74,
-    x: cvs.width/2 - (99/2),
+    x: Math.floor(cvs.width/2 - (99/2)),
     y: cvs.height - 110,
     dx: 2,
     frame: 0,
@@ -116,6 +116,61 @@ const cat = {
         if(rightPressed && leftPressed) {
             this.dir = origDir
         }
+
+        // detect if ball touches cat
+        if(ball.y + ball.h > this.y + 30 && ball.x + ball.w > this.x && ball.x < this.x + this.w && ball.y < this.y + 25) {
+            //change direction based on where it hits
+            let collPoint = (cat.x + cat.w) - (ball.x + ball.w/2)
+            console.log(collPoint)
+
+            //range from -10.5 to 109.5 || 30
+            // TODO: clean this up
+            if (collPoint < 20) {
+                if(cat.dir == 'left') {
+                    ball.dy = -2
+                    if (ball.dx > 0) {
+                        ball.dx = 4
+                    } else {
+                        ball.dx = -4
+                    }
+                }
+                if(cat.dir == 'right') {
+                    ball.dy = -2
+                    if (ball.dx > 0) {
+                        ball.dx = 4
+                    } else {
+                        ball.dx = -4
+                    }
+                }
+                
+            } 
+            else if (collPoint >= 20 && collPoint <= 90) {
+                ball.dy = -3
+                if (ball.dx > 0) {
+                    ball.dx = 3
+                } else {
+                    ball.dx = -3
+                }
+            }
+            else if (collPoint > 90) {
+                if (cat.dir == 'left') {
+                    ball.dy = -2
+                    if (ball.dx > 0) {
+                        ball.dx = 4
+                    } else {
+                        ball.dx = -4
+                    }
+                }
+                if (cat.dir == 'right') {
+                    ball.dy = -2
+                    if (ball.dx > 0) {
+                        ball.dx = 4
+                    } else {
+                        ball.dx = -4
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -127,8 +182,8 @@ const ball = {
     h: 27, 
     x: cvs.width / 2,
     y: cvs.height / 2,
-    dx: 4,
-    dy: 4,
+    dx: 3,
+    dy: 3,
     frame: 0,
 
     draw: function () {
@@ -138,9 +193,9 @@ const ball = {
     update: function () {
         // check to see if ball makes contact with the edges of the screen
         if (this.y + this.h >= cvs.height) {
-            console.log('GAME OVER!')
+            // console.log('GAME OVER!')
             // off bottom
-            this.dy = -this.dy
+            
         }
         if (this.x + this.h >= cvs.width) {
             // off right
