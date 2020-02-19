@@ -219,16 +219,20 @@ const ball = {
 const bricks = {
     list: [],
 
+    barrier: {
+        sX: 99,
+        sY: 0
+    },
     block1: {
-        sX: 0,
-        sY: 148
+        sX: 99,
+        sY: 41
     },
     block2: {
-        sX: 0,
-        sY: 187
+        sX: 99,
+        sY: 82
     },
-    w: 54,
-    h: 39,
+    w: 57,
+    h: 41,
 
     draw: function () {
         for (let i = 0; i < this.list.length; i++) {
@@ -237,6 +241,9 @@ const bricks = {
 
             // check the type of block
             switch (blockType) {
+                case -1:
+                    c.drawImage(sprites, this.barrier.sX, this.barrier.sY, this.w, this.h, this.list[i].x, this.list[i].y, this.w, this.h)
+                    break
                 case 1:
                     c.drawImage(sprites, this.block1.sX, this.block1.sY, this.w, this.h, this.list[i].x, this.list[i].y, this.w, this.h)
                     break
@@ -252,28 +259,29 @@ const bricks = {
         if (ball.y < cvs.height / 2) {
             for (let i = 0; i < this.list.length; i++) {
                 
-                if(this.list[i].type > 0 && ball.x < this.list[i].x + this.w && ball.x + ball.w > this.list[i].x && ball.y < this.list[i].y + this.h && ball.y + ball.h > this.list[i].y) {
+                if((this.list[i].type > 0 || this.list[i].type == -1) && ball.x < this.list[i].x + this.w && ball.x + ball.w > this.list[i].x && ball.y < this.list[i].y + this.h && ball.y + ball.h > this.list[i].y) {
                     console.log('CONTACT')
-                    if(ball.y <= this.list[i].y - (this.h)) {
-                        this.list[i].type -= 1
+                    if(ball.y <= this.list[i].y) {
+                        if(this.list[i].type !== -1 && this.list[i].type !== 0){ this.list[i].type -= 1 }
                         ball.dy = -ball.dy
                     }
                     //Hit was from below the brick
 
-                    if(ball.y >= this.list[i].y + (this.h)){
-                        this.list[i].type -= 1
+                    if(ball.y >= this.list[i].y){
+                        if(this.list[i].type !== -1 && this.list[i].type !== 0){ this.list[i].type -= 1 }
                         ball.dy = -ball.dy
+
                     }
                     //Hit was from above the brick
 
                     if(ball.x < this.list[i].x){
-                        this.list[i].type -= 1
+                        if(this.list[i].type !== -1 && this.list[i].type !== 0){ this.list[i].type -= 1 }
                         ball.dx = -ball.dx
                     }
                     //Hit was on left
 
                     if(ball.x > this.list[i].x){
-                        this.list[i].type -= 1
+                        if(this.list[i].type !== -1 && this.list[i].type !== 0){ this.list[i].type -= 1 }
                         ball.dx = -ball.dx
                     }
 
@@ -319,7 +327,8 @@ const levelData = [
     [
         [0, 1, 2, 1, 2, 1, 0],
         [0, 2, 2, 1, 1, 2, 0],
-        [0, 1, 2, 2, 1, 1, 0]
+        [0, 1, 2, 2, 1, 1, 0],
+        [0, 1, 1, -1, 1, -1, 0]
     ]
 ]
 
@@ -332,7 +341,7 @@ const initLevel = () => {
     let rows = totalBlocks / columns
     let xGap = 3
     let yGap = xGap
-    let xOffset = 2
+    let xOffset = 0
     let yOffset = xOffset
 
 
